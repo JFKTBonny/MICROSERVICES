@@ -1,0 +1,7 @@
+/home/bonny/MICROSERVICES/Java-Microservices-and-Containers-in-the-Cloud/89288133-Binildas-ch08-Source/ch08/ch08-01/02-ProductWeb/src/main/java/com/acme/ecom/product/config/SwaggerConfig.java
+/home/bonny/MICROSERVICES/Java-Microservices-and-Containers-in-the-Cloud/89288133-Binildas-ch08-Source/ch08/ch08-01/02-ProductWeb/src/main/java/com/acme/ecom/product/model/Product.java
+/home/bonny/MICROSERVICES/Java-Microservices-and-Containers-in-the-Cloud/89288133-Binildas-ch08-Source/ch08/ch08-01/02-ProductWeb/src/main/java/com/acme/ecom/product/EcomProductMicroserviceApplication.java
+/home/bonny/MICROSERVICES/Java-Microservices-and-Containers-in-the-Cloud/89288133-Binildas-ch08-Source/ch08/ch08-01/02-ProductWeb/src/main/java/com/acme/ecom/product/controller/ProductRestController.java
+/home/bonny/MICROSERVICES/Java-Microservices-and-Containers-in-the-Cloud/89288133-Binildas-ch08-Source/ch08/ch08-01/02-ProductWeb/src/main/java/com/acme/ecom/product/InitializationComponent.java
+/home/bonny/MICROSERVICES/Java-Microservices-and-Containers-in-the-Cloud/89288133-Binildas-ch08-Source/ch08/ch08-01/02-ProductWeb/src/main/java/com/acme/ecom/product/controller/ProductRestControllerConfiguration.java
+/home/bonny/MICROSERVICES/Java-Microservices-and-Containers-in-the-Cloud/89288133-Binildas-ch08-Source/ch08/ch08-01/02-ProductWeb/src/main/java/com/acme/ecom/product/model/ProductCategory.java
