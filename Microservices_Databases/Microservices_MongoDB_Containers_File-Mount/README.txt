@@ -1,200 +1,94 @@
-Sample using mounted files for MongoDB
-Browser => ProductWeb μS => ProductServer μS => MongoDB μS =mount=> File
+Deploying Product Microservices with MongoDB (Mounted Volume, Docker)
+================================================================
 
-Build & package Microservices, build images, and run containers
----------------------------------------------------------------
-(base) binildass-MacBook-Pro:ch08-05 binil$ eval $(minikube docker-env)
-(base) binildass-MacBook-Pro:ch08-05 binil$ sh makeandrun.sh 
-[INFO] Scanning for projects...
-[INFO] ------------------------------------------------------------------------
-[INFO] Reactor Build Order:
-[INFO] 
-[INFO] Ecom-Product-Server-Microservice                                   [jar]
-[INFO] Ecom-Product-Web-Microservice                                      [jar]
-[INFO] Ecom                                                               [pom]
-[INFO] 
-...
-[INFO] 
-[INFO] Ecom-Product-Server-Microservice ................... SUCCESS [  2.710 s]
-[INFO] Ecom-Product-Web-Microservice ...................... SUCCESS [  0.731 s]
-[INFO] Ecom ............................................... SUCCESS [  0.032 s]
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  3.641 s
-[INFO] Finished at: 2023-05-17T22:27:39+05:30
-[INFO] ------------------------------------------------------------------------
-...
-Successfully tagged ecom/product-web:latest
-Successfully tagged ecom/product-server:latest
-(base) binildass-MacBook-Pro:ch08-05 binil$ 
+This walkthrough shows how to build, package, and run Product Web & Product Server microservices with **MongoDB** using Docker, while ensuring MongoDB data persists via mounted files.
 
+----------------------------------------------------------------
+Architecture
+----------------------------------------------------------------
 
-View Data Folder created
-------------------------
-(base) binildass-MacBook-Pro:~ binil$ minikube ssh
-                         _             _            
-            _         _ ( )           ( )           
-  ___ ___  (_)  ___  (_)| |/')  _   _ | |_      __  
-/' _ ` _ `\| |/' _ `\| || , <  ( ) ( )| '_`\  /'__`\
-| ( ) ( ) || || ( ) || || |\`\ | (_) || |_) )(  ___/
-(_) (_) (_)(_)(_) (_)(_)(_) (_)`\___/'(_,__/'`\____)
+        Browser
+          ↓
+        Product Web (Port 8080)
+          ↓
+        Product Server (Port 8081)
+          ↓
+        MongoDB Container
+          ⇔ Mounted Host Directory (/home/bonny/mongodata)
 
-$ ls /Users/binil/dockerbook/ch08-05/mongodata
-WiredTiger			       diagnostic.data
-WiredTiger.lock			       index-1--9202702318305535927.wt
-WiredTiger.turtle		       index-11--9202702318305535927.wt
-WiredTiger.wt			       index-3--9202702318305535927.wt
-WiredTigerLAS.wt		       index-5--9202702318305535927.wt
-_mdb_catalog.wt			       index-6--9202702318305535927.wt
-collection-0--9202702318305535927.wt   index-9--9202702318305535927.wt
-collection-10--9202702318305535927.wt  journal
-collection-2--9202702318305535927.wt   mongod.lock
-collection-4--9202702318305535927.wt   sizeStorer.wt
-collection-8--9202702318305535927.wt   storage.bson
-$ 
+----------------------------------------------------------------
+1. Build & Package Microservices
+----------------------------------------------------------------
 
-List running containers
------------------------
-(base) binildass-MacBook-Pro:~ binil$ docker ps
-CONTAINER ID   IMAGE                                      COMMAND                  CREATED         STATUS         PORTS                      NAMES
-3c9548abac1b   ecom/product-web                           "java -jar /ecom.jar"    3 minutes ago   Up 3 minutes   0.0.0.0:8080->8080/tcp     product-web
-2fcaac424751   ecom/product-server                        "java -jar /ecom.jar"    3 minutes ago   Up 3 minutes   0.0.0.0:8081->8081/tcp     product-server
-fa9a5f1a394a   mongo:4.2.24                               "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes   0.0.0.0:27017->27017/tcp   mongo
-...
-(base) binildass-MacBook-Pro:~ binil$
+        eval $(minikube docker-env)
+        sh makeandrun.sh
 
-View Product Server Logs
-------------------------
-(base) binildass-MacBook-Pro:01-ProductServer binil$ eval $(minikube docker-env)
-(base) binildass-MacBook-Pro:01-ProductServer binil$ docker logs --follow 2fcaac424751
+        - Builds **Product Web** and **Product Server** JARs  
+        - Creates Docker images `santonix/product-web` and `santonix/product-server`  
 
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::                (v3.2.0)
+----------------------------------------------------------------
+2. Verify MongoDB Data Directory
+----------------------------------------------------------------
 
-2023-05-17 16:57:56 INFO  StartupInfoLogger.logStarting:51 - Starting EcomProductMicroservice...
-...
-2023-05-17 16:57:56 INFO  InitializationComponent.init:42 - Start
-2023-05-17 16:57:56 DEBUG InitializationComponent.init:46 - Deleting all products ...
-2023-05-17 16:57:56 DEBUG InitializationComponent.init:63 - Creating 2 new products ...
-Hibernate: insert into product (code, prodname, price, title) values (?, ?, ?, ?)
-Hibernate: insert into product (code, prodname, price, title) values (?, ?, ?, ?)
-2023-05-17 16:57:56 INFO  InitializationComponent.init:68 - End
-2023-05-17 16:57:57 INFO  StartupInfoLogger.logStarted:57 - Started EcomProductMicroservice...
+        minikube ssh
+        ls /home/bonny/mongodata
 
-View Product Web Logs
----------------------
-(base) binildass-MacBook-Pro:01-ProductServer binil$ eval $(minikube docker-env)
-(base) binildass-MacBook-Pro:01-ProductServer binil$ docker logs --follow 3c9548abac1b
+        You should see MongoDB persistence files (`WiredTiger`, `journal`, `.wt` files, etc.).
 
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::                (v3.2.0)
+----------------------------------------------------------------
+3. Check Running Containers
+----------------------------------------------------------------
 
-...
-2023-05-17 16:57:57 INFO  InitializationComponent.init:37 - Start
-2023-05-17 16:57:57 DEBUG InitializationComponent.init:39 - Doing Nothing...
-2023-05-17 16:57:57 INFO  InitializationComponent.init:41 - End
-2023-05-17 16:57:58 INFO  StartupInfoLogger.logStarted:57 - Started EcomProductMicroservice...
-...
+        docker ps
 
-Test Microservice
------------------
-(base) binildass-MacBook-Pro:~ binil$ minikube ip
-192.168.64.6
-(base) binildass-MacBook-Pro:~ binil$ 
+        Expected:
 
-http://192.168.64.6:8080/product.html
+        - `product-web` → Port 8080  
+        - `product-server` → Port 8081  
+        - `mongo` → Port 27017  
 
-Data is loaded in the screen
+----------------------------------------------------------------
+4. View Logs
+----------------------------------------------------------------
 
-Shout down the mongo container
---------------------------------------
-List all containers to identify mongo container id
+        - Product Server logs:
 
-sudo docker ps
-sudo docker rm -f (mongo container id)
+          docker logs -f <product-server-container-id>
 
-(base) binildass-MacBook-Pro:~ binil$ docker rm -f fa9a5f1a394a
-fa9a5f1a394a
-(base) binildass-MacBook-Pro:~ binil$ 
+        - Product Web logs:
 
-(base) binildass-MacBook-Pro:~ binil$ docker ps
-CONTAINER ID   IMAGE                                      COMMAND                  CREATED          STATUS          PORTS                    NAMES
-3c9548abac1b   ecom/product-web                           "java -jar /ecom.jar"    18 minutes ago   Up 18 minutes   0.0.0.0:8080->8080/tcp   product-web
-2fcaac424751   ecom/product-server                        "java -jar /ecom.jar"    18 minutes ago   Up 18 minutes   0.0.0.0:8081->8081/tcp   product-server
-...
+          docker logs -f <product-web-container-id>
 
-Start new mongo container with same volume attached
------------------------------------------
+----------------------------------------------------------------
+5. Test the Microservice
+----------------------------------------------------------------
 
-docker run -d -it -p 27017:27017 --name mongo  --net=ecom-network -v /Users/binil/dockerbook/ch08-05/mongodata:/data/db  mongo:4.2.24
+        minikube ip
 
-(base) binildass-MacBook-Pro:~ binil$ docker run -d -it -p 27017:27017 --name mongo  --net=ecom-network -v /Users/binil/dockerbook/ch08-05/mongodata:/data/db  mongo:4.2.24
-372b037ca07cac8e09e77483631304f4d2d8efb3ef7297683c59087d7b6986aa
-(base) binildass-MacBook-Pro:~ binil$ 
+        Open in browser:
 
-List running containers
------------------------
-(base) binildass-MacBook-Pro:~ binil$ docker ps
-CONTAINER ID   IMAGE                                      COMMAND                  CREATED          STATUS          PORTS                      NAMES
-372b037ca07c   mongo:4.2.24                               "docker-entrypoint.s…"   6 seconds ago    Up 5 seconds    0.0.0.0:27017->27017/tcp   mongo
-3c9548abac1b   ecom/product-web                           "java -jar /ecom.jar"    21 minutes ago   Up 21 minutes   0.0.0.0:8080->8080/tcp     product-web
-2fcaac424751   ecom/product-server                        "java -jar /ecom.jar"    21 minutes ago   Up 21 minutes   0.0.0.0:8081->8081/tcp     product-server                 mongo
-...
-(base) binildass-MacBook-Pro:~ binil$
+        http://<minikube-ip>:8080/product.html
 
-Test the Client
----------------
-Open below link in a new browser window
+        Example: http://192.168.64.6:8080/product.html
 
-http://192.168.64.6:8080/product.html
+        ✅ Product list should appear.
 
-Data has been retained in the screen.
+----------------------------------------------------------------
+6. Demonstrate MongoDB Persistence
+----------------------------------------------------------------
 
-Clean the Environment
----------------------
-(base) binildass-MacBook-Pro:ch08-05 binil$ sh clean.sh 
-[INFO] Scanning for projects...
-[INFO] ------------------------------------------------------------------------
-[INFO] Reactor Build Order:
-[INFO] 
-[INFO] Ecom-Product-Server-Microservice                                   [jar]
-[INFO] Ecom-Product-Web-Microservice                                      [jar]
-[INFO] Ecom                                                               [pom]
-[INFO] 
-...
-[INFO] 
-[INFO] Ecom-Product-Server-Microservice ................... SUCCESS [  0.107 s]
-[INFO] Ecom-Product-Web-Microservice ...................... SUCCESS [  0.010 s]
-[INFO] Ecom ............................................... SUCCESS [  0.039 s]
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  0.376 s
-[INFO] Finished at: 2023-05-17T22:50:32+05:30
-[INFO] ------------------------------------------------------------------------
-product-web
-product-server
-mongo
-product-web
-product-server
-mongo
-Untagged: ecom/product-web:latest
-Untagged: ecom/product-server:latest
-ecom-network
-(base) binildass-MacBook-Pro:ch08-05 binil$ 
+        1. Stop Mongo container:
 
+          docker rm -f <mongo-container-id>
 
+        2. Start new Mongo container with same volume:
 
+          docker run -d -it -p 27017:27017      --name mongo      --net=santonix-network      -v /home/bonny/mongodata:/data/db      mongo:4.2.24
 
+        3. Check containers:
 
+          docker ps
+
+        4. Re-test application:
+
+          http://<minikube-ip>:8080/product.html
