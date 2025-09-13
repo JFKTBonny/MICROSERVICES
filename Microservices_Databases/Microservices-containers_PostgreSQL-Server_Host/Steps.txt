@@ -1,0 +1,88 @@
+Microservices in Docker using Local PostgreSQL and RestTemplate (Full CRUD)
+Architecture:
+
+                Browser
+                ↓
+                Product Web μS (Frontend, Port 8080)
+                ↓
+                Product Server μS (Backend, Port 8081)
+                ↓
+                PostgreSQLDB (Local, Port 5432)
+
+
+Steps:
+
+Find Local IP Address:
+
+                hostname -I | awk '{print$1}'
+                # Example output: 192.168.29.96
+
+
+Configure PostgreSQL to Accept Remote Connections
+
+                Edit postgresql.conf (/Library/PostgreSQL/12/data/):
+
+                listen_addresses = '*'
+
+
+                Edit pg_hba.conf to allow Docker/Microservice access:
+
+                host  all  all  172.17.0.1/16   md5
+                host  all  all  192.168.29.96/32  md5
+
+
+Start PostgreSQL Server:
+
+                pg_ctl -D /Library/PostgreSQL/12/data start
+                pg_ctl -D /Library/PostgreSQL/12/data stop   # to stop
+
+
+Build and Run Docker Microservices (via Minikube):
+
+                eval $(minikube docker-env)
+                sh makeandrun.sh
+
+
+                Builds Product Web and Product Server JARs
+
+                Creates Docker images
+
+                Runs containers
+
+Verify Running Containers:
+
+                docker ps
+                # Example:
+                # 0b5c7e62ebc2  ecom/product-web      Up 21 min  0.0.0.0:8080->8080/tcp
+                # 11bac3f7c0e1  ecom/product-server   Up 21 min  0.0.0.0:8081->8081/tcp
+
+
+View Logs:
+
+                Product Server:
+
+                docker logs --follow <product-server-container-id>
+
+
+Product Web:
+
+                docker logs --follow <product-web-container-id>
+
+
+Test the Microservices:
+
+                minikube ip
+                # Open in browser:
+                http://<minikube-ip>:8080/product.html
+
+
+Cleanup  Environment:
+
+                sh cleanup.sh
+
+
+                Stops and removes containers
+
+                Untags Docker images
+
+                Cleans Docker network

@@ -1,0 +1,6 @@
+/home/bonny/MICROSERVICES/Java-Microservices-and-Containers-in-the-Cloud/89288133-Binildas-ch11-Source/ch11/Microservices_Kubernetes_Kafka/02-ProductWeb/src/main/java/com/acme/ecom/product/KafkaConfig.java
+/home/bonny/MICROSERVICES/Java-Microservices-and-Containers-in-the-Cloud/89288133-Binildas-ch11-Source/ch11/Microservices_Kubernetes_Kafka/02-ProductWeb/src/main/java/com/acme/ecom/product/controller/ProductRestController.java
+/home/bonny/MICROSERVICES/Java-Microservices-and-Containers-in-the-Cloud/89288133-Binildas-ch11-Source/ch11/Microservices_Kubernetes_Kafka/02-ProductWeb/src/main/java/com/acme/ecom/product/EcomProductWebMicroserviceApplication.java
+/home/bonny/MICROSERVICES/Java-Microservices-and-Containers-in-the-Cloud/89288133-Binildas-ch11-Source/ch11/Microservices_Kubernetes_Kafka/02-ProductWeb/src/main/java/com/acme/ecom/product/model/Products.java
+/home/bonny/MICROSERVICES/Java-Microservices-and-Containers-in-the-Cloud/89288133-Binildas-ch11-Source/ch11/Microservices_Kubernetes_Kafka/02-ProductWeb/src/main/java/com/acme/ecom/product/model/Product.java
+/home/bonny/MICROSERVICES/Java-Microservices-and-Containers-in-the-Cloud/89288133-Binildas-ch11-Source/ch11/Microservices_Kubernetes_Kafka/02-ProductWeb/src/main/java/com/acme/ecom/product/hateoas/model/Product.java

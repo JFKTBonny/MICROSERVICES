@@ -1,0 +1,6 @@
+com/acme/ecom/product/EcomProductWebMicroserviceApplication.class
+com/acme/ecom/product/KafkaConfig.class
+com/acme/ecom/product/model/Product.class
+com/acme/ecom/product/controller/ProductRestController.class
+com/acme/ecom/product/model/Products.class
+com/acme/ecom/product/hateoas/model/Product.class
