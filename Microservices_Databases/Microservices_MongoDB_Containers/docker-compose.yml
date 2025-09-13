@@ -10,31 +10,31 @@ services:
     volumes:
       - "db-data:/data/db"
     networks:
-      - ecom-network
+      - santonix-network
    
   server:
     build: ./01-ProductServer
-    # image: ecom/product-server
+    # image: santonix/product-server
     container_name: product-server
     ports:
       - "8081:8081"
     depends_on:
       - "db"
     networks:
-      - ecom-network
+      - santonix-network
     environment:
       - spring.data.mongodb.uri=mongodb://mongo:27017/test
 
   web:
     build: ./02-ProductWeb
-    # image: ecom/product-web
+    # image: santonix/product-web
     container_name: product-web
     depends_on:
       - "server"
     ports:
       - "8080:8080"
     networks:
-      - ecom-network
+      - santonix-network
     environment:
       - acme.PRODUCT_SERVICE_URL=http://product-server:8081/products
     
@@ -49,5 +49,5 @@ volumes:
          device: /home/bonny/mongodata
 
 networks:
-   ecom-network:
+   santonix-network:
  
