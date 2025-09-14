@@ -1,0 +1,8 @@
+# Ignore Maven build output
+target/
+*.jar
+*.class
+*.log
+
+# Ignore OS files
+.DS_Store

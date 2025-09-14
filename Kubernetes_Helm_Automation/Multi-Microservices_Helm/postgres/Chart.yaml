@@ -1,5 +1,5 @@
 apiVersion: v2
-name: springboothelm
+name: postgres
 description: A Helm chart for Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
@@ -14,9 +14,16 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-# version: 0.1.0
-version: 0.1.1
+version: 0.1.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: latest
+appVersion: 1.16.0
+
+keywords:
+  - database
+  - postgres
+home: https://github.com/acme/
+maintainers:
+  - name: santonix
+    url: https://github.com/acme

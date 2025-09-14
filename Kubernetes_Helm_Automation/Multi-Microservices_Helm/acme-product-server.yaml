@@ -1,0 +1,11 @@
+app:
+  name: product-server
+  group: backend
+  container:
+    image: santonix/product-server:latest
+    imagePullPolicy: IfNotPresent
+    config:
+      - name: postgres-config
+    env: 
+      - key: DB_SERVER
+        value: postgres
